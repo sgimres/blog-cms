@@ -38,7 +38,10 @@ jobs:
       run: chmod -R 777 storage bootstrap/cache
 
     - name: Install NPM dependencies
-      run: npm install
+      run: npm ci
+
+    - name: Install NPM build dependencies
+      run: npm run build
 
     - name: Create SQLite database
       run: |
