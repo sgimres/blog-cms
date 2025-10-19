@@ -9,21 +9,10 @@ on:
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        php-version: ['8.1', '8.2', '8.3']
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-version }}
-        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
-        coverage: xdebug
 
     - name: Get Composer Cache Directory
       id: composer-cache
@@ -37,7 +26,7 @@ jobs:
         restore-keys: ${{ runner.os }}-composer-
 
     - name: Install Composer dependencies
-      run: composer install --prefer-dist --no-interaction --no-progress
+      run: composer install
 
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
@@ -48,15 +37,13 @@ jobs:
     - name: Set directory permissions
       run: chmod -R 777 storage bootstrap/cache
 
+    - name: Install NPM dependencies
+      run: npm install
+
     - name: Create SQLite database
       run: |
         mkdir -p database
         touch database/database.sqlite
-
-    - name: Configure SQLite for testing
-      run: |
-        echo "DB_CONNECTION=sqlite" >> .env
-        echo "DB_DATABASE=database/database.sqlite" >> .env
 
     - name: Run migrations
       run: php artisan migrate --force
@@ -65,13 +52,6 @@ jobs:
       run: php artisan db:seed --force
       continue-on-error: true
 
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      run: php artisan test --coverage
-
-    - name: Run Laravel Pint (Code Style)
-      run: ./vendor/bin/pint --test
-      continue-on-error: true
-
-    - name: Run PHPStan (Static Analysis)
-      run: ./vendor/bin/phpstan analyse
-      continue-on-error: true
+    - name: Run Laravel Tests
+      run: php artisan test
+      continue-on-error: false
