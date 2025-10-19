@@ -16,15 +16,27 @@ class PostController extends Controller
     {
         $query = Post::with('categories', 'user');
 
-        if (! Auth::user()->isAdmin()) {
-            $query->where('user_id', Auth::id());
+        if (Auth::check()) {
+            // Authenticated users see all published posts by default
+            if ($request->my_posts) {
+                // Filter to show only their own posts
+                $query->where('user_id', Auth::id());
+            } elseif (! Auth::user()->isAdmin()) {
+                // Non-admin users see published posts only (unless filtering to their own)
+                $query->published();
+            }
+            // Admins can see all posts (including drafts)
+        } else {
+            // Non-authenticated users only see published posts
+            $query->published();
         }
 
         if ($request->search) {
             $query->where('title', 'like', '%'.$request->search.'%');
         }
 
-        if ($request->status) {
+        if ($request->status && Auth::check()) {
+            // Only allow status filtering for authenticated users
             $query->where('status', $request->status);
         }
 
@@ -36,7 +48,7 @@ class PostController extends Controller
 
         $posts = $query->latest()->paginate(10);
 
-        $categories = Category::where('user_id', Auth::id())->get();
+        $categories = Category::all();
 
         return view('posts.index', compact('posts', 'categories'));
     }
@@ -46,7 +58,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('user_id', Auth::id())->get();
+        $categories = Category::all();
 
         return view('posts.create', compact('categories'));
     }
@@ -85,7 +97,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $this->authorize('view', $post);
+        // Allow viewing published posts by anyone, otherwise require authorization
+        if ($post->status !== 'published') {
+            $this->authorize('view', $post);
+        }
 
         return view('posts.show', compact('post'));
     }
@@ -96,7 +111,7 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $this->authorize('update', $post);
-        $categories = Category::where('user_id', Auth::id())->get();
+        $categories = Category::all();
 
         return view('posts.edit', compact('post', 'categories'));
     }

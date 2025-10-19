@@ -1,7 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Posts') }}
+            @if(Auth::check())
+                {{ request('my_posts') ? __('Your Posts') : __('All Posts') }}
+            @else
+                {{ __('Published Posts') }}
+            @endif
         </h2>
     </x-slot>
 
@@ -10,31 +14,47 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-medium">Your Posts</h3>
-                        <a href="{{ route('posts.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Create New Post
-                        </a>
+                        <h3 class="text-lg font-medium">
+                            @if(Auth::check())
+                                {{ request('my_posts') ? 'Your Posts' : 'All Posts' }}
+                            @else
+                                Published Posts
+                            @endif
+                        </h3>
+                        @if(Auth::check())
+                            <a href="{{ route('posts.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Create New Post
+                            </a>
+                        @endif
                     </div>
 
                     <form method="GET" class="mb-6 flex flex-wrap gap-4">
                         <div>
                             <x-text-input id="search" class="block" type="text" name="search" :value="request('search')" placeholder="Search by title" />
                         </div>
-                        <div>
-                            <select id="status" class="block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" name="status">
-                                <option value="">All Status</option>
-                                <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
-                            </select>
-                        </div>
-                        <div>
-                            <select id="category" class="block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" name="category">
-                                <option value="">All Categories</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @if(Auth::check())
+                            <div>
+                                <select id="status" class="block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" name="status">
+                                    <option value="">All Status</option>
+                                    <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
+                                    <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="my_posts" name="my_posts" value="1" {{ request('my_posts') ? 'checked' : '' }} class="rounded border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600">
+                                <label for="my_posts" class="ml-2 text-sm text-gray-700 dark:text-gray-300">My Posts Only</label>
+                            </div>
+                        @endif
+                        @if($categories->count() > 0)
+                            <div>
+                                <select id="category" class="block border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" name="category">
+                                    <option value="">All Categories</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
                         <div>
                             <x-primary-button type="submit">Filter</x-primary-button>
                         </div>
@@ -68,12 +88,14 @@
                                         <td class="px-4 py-2">{{ $post->published_at ? $post->published_at->format('M d, Y H:i') : 'Not scheduled' }}</td>
                                         <td class="px-4 py-2">
                                             <a href="{{ route('posts.show', $post) }}" class="text-blue-600 hover:text-blue-900 mr-2">View</a>
-                                            <a href="{{ route('posts.edit', $post) }}" class="text-green-600 hover:text-green-900 mr-2">Edit</a>
-                                            <form method="POST" action="{{ route('posts.destroy', $post) }}" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure?')">Delete</button>
-                                            </form>
+                                            @if(Auth::check() && Auth::user() && (Auth::user()->isAdmin() || Auth::user()->id === $post->user_id))
+                                                <a href="{{ route('posts.edit', $post) }}" class="text-green-600 hover:text-green-900 mr-2">Edit</a>
+                                                <form method="POST" action="{{ route('posts.destroy', $post) }}" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure?')">Delete</button>
+                                                </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty

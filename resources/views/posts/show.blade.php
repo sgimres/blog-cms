@@ -40,14 +40,16 @@
                         </div>
                     </div>
 
-                    <div class="flex space-x-4">
-                        <a href="{{ route('posts.edit', $post) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Edit
-                        </a>
-                        <a href="{{ route('posts.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                            Back to Posts
-                        </a>
-                    </div>
+                     <div class="flex space-x-4">
+                         @if(Auth::check() && Auth::user() && (Auth::user()->isAdmin() || Auth::user()->id === $post->user_id))
+                             <a href="{{ route('posts.edit', $post) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                 Edit
+                             </a>
+                         @endif
+                         <a href="{{ route('posts.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                             Back to Posts
+                         </a>
+                     </div>
                 </div>
             </div>
         </div>

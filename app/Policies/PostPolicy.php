@@ -20,6 +20,12 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
+        // Anyone can view published posts
+        if ($post->status === 'published') {
+            return true;
+        }
+
+        // Only admins or owners can view draft posts
         return $user->isAdmin() || $user->id === $post->user_id;
     }
 

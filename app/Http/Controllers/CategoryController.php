@@ -13,10 +13,16 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::where('user_id', Auth::id())
-            ->with('children')
-            ->whereNull('parent_id')
-            ->get();
+        if (Auth::user()->isAdmin()) {
+            $categories = Category::with(['children', 'user'])
+                ->whereNull('parent_id')
+                ->get();
+        } else {
+            $categories = Category::where('user_id', Auth::id())
+                ->with('children')
+                ->whereNull('parent_id')
+                ->get();
+        }
 
         return view('categories.index', compact('categories'));
     }
@@ -26,7 +32,11 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('user_id', Auth::id())->get();
+        if (Auth::user()->isAdmin()) {
+            $categories = Category::all();
+        } else {
+            $categories = Category::where('user_id', Auth::id())->get();
+        }
 
         return view('categories.create', compact('categories'));
     }
@@ -66,7 +76,12 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         $this->authorize('update', $category);
-        $categories = Category::where('user_id', Auth::id())->where('id', '!=', $category->id)->get();
+
+        if (Auth::user()->isAdmin()) {
+            $categories = Category::where('id', '!=', $category->id)->get();
+        } else {
+            $categories = Category::where('user_id', Auth::id())->where('id', '!=', $category->id)->get();
+        }
 
         return view('categories.edit', compact('category', 'categories'));
     }
