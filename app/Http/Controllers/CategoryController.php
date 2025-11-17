@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -105,6 +106,20 @@ class CategoryController extends Controller
             'parent_id' => $request->parent_id,
         ]);
 
+        // Send notification if admin edited someone else's category
+        if (Auth::user()->isAdmin() && $category->user_id !== Auth::id()) {
+            Notification::create([
+                'user_id' => $category->user_id,
+                'type' => 'category_edited',
+                'title' => 'Category Updated',
+                'message' => "Your category \"{$category->name}\" has been updated by an administrator.",
+                'data' => [
+                    'category_name' => $category->name,
+                    'edited_by' => Auth::user()->name,
+                ],
+            ]);
+        }
+
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
 
@@ -114,6 +129,21 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $this->authorize('delete', $category);
+
+        // Send notification to category owner if admin is deleting someone else's category
+        if (Auth::user()->isAdmin() && $category->user_id !== Auth::id()) {
+            Notification::create([
+                'user_id' => $category->user_id,
+                'type' => 'category_deleted',
+                'title' => 'Category Deleted',
+                'message' => "Your category \"{$category->name}\" has been deleted by an administrator.",
+                'data' => [
+                    'category_name' => $category->name,
+                    'deleted_by' => Auth::user()->name,
+                ],
+            ]);
+        }
+
         $category->delete();
 
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
