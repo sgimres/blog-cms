@@ -15,11 +15,13 @@ class CategoryController extends Controller
     {
         if (Auth::user()->isAdmin()) {
             $categories = Category::with(['children', 'user'])
+                ->withCount('posts')
                 ->whereNull('parent_id')
                 ->get();
         } else {
             $categories = Category::where('user_id', Auth::id())
                 ->with('children')
+                ->withCount('posts')
                 ->whereNull('parent_id')
                 ->get();
         }
