@@ -41,6 +41,11 @@ class Post extends Model
         return $this->belongsToMany(Category::class);
     }
 
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     protected static function boot()
     {
         parent::boot();

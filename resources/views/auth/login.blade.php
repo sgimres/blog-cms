@@ -1,8 +1,8 @@
 <x-guest-layout>
     <!-- Header -->
     <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Welcome back</h2>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Sign in to your account to continue</p>
+        <h2 class="text-3xl font-black uppercase tracking-tight">Welcome back</h2>
+        <p class="mt-2 text-sm font-mono text-gray-600">Sign in to your account</p>
     </div>
 
     <!-- Session Status -->
@@ -20,11 +20,11 @@
 
         <!-- Password -->
         <div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between mb-1">
                 <x-input-label for="password" :value="__('Password')" />
                 @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
-                        {{ __('Forgot your password?') }}
+                    <a href="{{ route('password.request') }}" class="text-sm font-bold text-black hover:text-neo-blue hover:underline decoration-2 underline-offset-2">
+                        {{ __('Forgot password?') }}
                     </a>
                 @endif
             </div>
@@ -34,33 +34,26 @@
 
         <!-- Remember Me -->
         <div class="flex items-center">
-            <input id="remember_me" type="checkbox" name="remember" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
-            <label for="remember_me" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+            <input id="remember_me" type="checkbox" name="remember" class="h-5 w-5 text-black focus:ring-black border-2 border-black rounded-none shadow-neo-sm checked:bg-black">
+            <label for="remember_me" class="ml-2 block text-sm font-bold text-gray-700">
                 {{ __('Remember me') }}
             </label>
         </div>
 
         <div>
-            <x-primary-button>
+            <x-primary-button class="w-full">
                 {{ __('Sign in') }}
             </x-primary-button>
         </div>
 
-        <!-- Divider -->
-        <div class="relative">
-            <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
-            </div>
-            <div class="relative flex justify-center text-sm">
-                <span class="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">New to our platform?</span>
-            </div>
-        </div>
-
         <!-- Sign Up Link -->
-        <div class="text-center">
-            <a href="{{ route('register') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-medium">
-                {{ __('Create an account') }} →
-            </a>
+        <div class="mt-6 text-center">
+            <p class="text-sm font-mono">
+                New here? 
+                <a href="{{ route('register') }}" class="font-bold text-black hover:bg-neo-yellow px-1 transition-colors border-b-2 border-black">
+                    {{ __('Create an account') }}
+                </a>
+            </p>
         </div>
     </form>
 </x-guest-layout>

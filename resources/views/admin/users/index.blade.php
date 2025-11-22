@@ -1,62 +1,61 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-black text-xl text-black uppercase leading-tight">
             {{ __('User Management') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h3 class="text-lg font-medium mb-6">All Users</h3>
+            <div class="bg-white border-4 border-black shadow-neo-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-black uppercase">All Users</h3>
+                    <span class="bg-neo-yellow text-black font-bold px-3 py-1 border-2 border-black shadow-neo-sm">{{ $users->total() }} Users</span>
+                </div>
 
-                    @if(session('success'))
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full table-auto">
-                            <thead>
-                                <tr class="bg-gray-50 dark:bg-gray-700">
-                                    <th class="px-4 py-2 text-left">Name</th>
-                                    <th class="px-4 py-2 text-left">Email</th>
-                                    <th class="px-4 py-2 text-left">Role</th>
-                                    <th class="px-4 py-2 text-left">Joined</th>
-                                    <th class="px-4 py-2 text-left">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($users as $user)
-                                    <tr class="border-t dark:border-gray-600">
-                                        <td class="px-4 py-2">{{ $user->name }}</td>
-                                        <td class="px-4 py-2">{{ $user->email }}</td>
-                                        <td class="px-4 py-2">
-                                            <form method="POST" action="{{ route('admin.users.update-role', $user) }}" class="inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                <select name="role" onchange="this.form.submit()" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                                                    <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
-                                                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
-                                                </select>
-                                            </form>
-                                        </td>
-                                        <td class="px-4 py-2">{{ $user->created_at->format('M d, Y') }}</td>
-                                        <td class="px-4 py-2">
-                                            <!-- Add more actions if needed -->
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-4 py-2 text-center">No users found.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                @if(session('success'))
+                    <div class="bg-green-100 border-2 border-black text-black font-bold px-4 py-3 mb-6 shadow-neo-sm">
+                        {{ session('success') }}
                     </div>
+                @endif
 
+                <div class="overflow-x-auto border-2 border-black">
+                    <table class="min-w-full text-left">
+                        <thead>
+                            <tr class="bg-black text-white uppercase text-sm font-bold">
+                                <th class="px-4 py-3 border-b-2 border-black">Name</th>
+                                <th class="px-4 py-3 border-b-2 border-black">Email</th>
+                                <th class="px-4 py-3 border-b-2 border-black">Role</th>
+                                <th class="px-4 py-3 border-b-2 border-black">Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y-2 divide-black font-mono text-sm">
+                            @forelse($users as $user)
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-4 py-3 font-bold text-black">{{ $user->name }}</td>
+                                    <td class="px-4 py-3">{{ $user->email }}</td>
+                                    <td class="px-4 py-3">
+                                        <form method="POST" action="{{ route('admin.users.update-role', $user) }}" class="inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <select name="role" onchange="this.form.submit()" class="border-2 border-black text-black font-bold focus:outline-none focus:shadow-neo-sm py-1 px-2 cursor-pointer transition-all duration-200 hover:bg-neo-white">
+                                                <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
+                                                <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                    <td class="px-4 py-3">{{ $user->created_at->format('M d, Y') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="px-4 py-8 text-center font-bold text-gray-500">No users found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6">
                     {{ $users->links() }}
                 </div>
             </div>

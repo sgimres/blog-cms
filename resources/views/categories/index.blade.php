@@ -1,121 +1,92 @@
 <x-app-layout>
     <x-slot name="header">
-        {{ auth()->user()->isAdmin() ? __('All Categories') : __('Categories') }}
-        <x-slot name="actions">
-            <a href="{{ route('categories.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition-all duration-200">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Create Category
-            </a>
-        </x-slot>
+        {{ auth()->user()->isAdmin() ? __('ALL CATEGORIES') : __('CATEGORIES') }}
+    </x-slot>
+
+    <x-slot name="actions">
+        <a href="{{ route('categories.create') }}" class="flex items-center gap-2 bg-neo-purple text-white font-black uppercase px-6 py-3 border-4 border-black shadow-neo hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+            <span class="text-xl">+</span> New Category
+        </a>
     </x-slot>
 
     <!-- Success Message -->
     @if(session('success'))
-        <div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 text-green-600 dark:text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <p class="text-green-800 dark:text-green-200">{{ session('success') }}</p>
+        <div class="mb-8 bg-neo-green border-4 border-black p-4 shadow-neo animate-bounce">
+            <div class="flex items-center font-bold text-black">
+                <span class="text-2xl mr-2">🎉</span>
+                <p>{{ session('success') }}</p>
             </div>
         </div>
     @endif
 
     <!-- Categories Grid -->
-    @forelse($categories as $category)
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6 hover:shadow-md transition-shadow duration-200">
-            <div class="flex items-start justify-between">
-                <div class="flex-1">
-                    <div class="flex items-center mb-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-lg mr-4">
+    <div class="grid grid-cols-1 gap-6">
+        @forelse($categories as $category)
+            <div class="bg-white border-4 border-black shadow-neo hover:shadow-neo-lg hover:-translate-y-1 transition-all duration-200 p-6">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                        <div class="w-16 h-16 bg-neo-purple border-4 border-black flex items-center justify-center text-white font-black text-2xl shadow-neo-sm shrink-0">
                             {{ substr($category->name, 0, 1) }}
                         </div>
                         <div>
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $category->name }}</h3>
-                            @if($category->description)
-                                <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $category->description }}</p>
-                            @endif
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                        @if(auth()->user()->isAdmin() && $category->user)
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                </svg>
-                                Created by {{ $category->user->name }}
-                            </div>
-                        @endif
-                        
-                        @if($category->parent)
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
-                                </svg>
-                                Parent: {{ $category->parent->name }}
-                            </div>
-                        @endif
-                        
-                        @if($category->children->count() > 0)
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                                </svg>
-                                {{ $category->children->count }} subcategorie{{ $category->children->count() !== 1 ? 's' : '' }}
-                                @if($category->children->count() <= 3)
-                                    ({{ $category->children->pluck('name')->join(', ') }})
+                            <div class="flex items-center gap-3 mb-1">
+                                <h3 class="text-2xl font-black uppercase">{{ $category->name }}</h3>
+                                @if($category->parent)
+                                    <span class="px-2 py-0.5 text-[10px] font-mono font-bold bg-gray-200 border-2 border-black text-gray-600 uppercase">
+                                        Sub of {{ $category->parent->name }}
+                                    </span>
                                 @endif
                             </div>
-                        @endif
-                        
-                        <div class="flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-                            </svg>
-                            {{ $category->posts_count ?? 0 }} post{{ ($category->posts_count ?? 0) !== 1 ? 's' : '' }}
+                            
+                            @if($category->description)
+                                <p class="font-mono text-sm text-gray-600 border-l-4 border-neo-yellow pl-2 mb-3">
+                                    {{ $category->description }}
+                                </p>
+                            @endif
+
+                            <div class="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider">
+                                <span class="flex items-center bg-neo-white border-2 border-black px-2 py-1">
+                                    {{ $category->posts_count ?? 0 }} POSTS
+                                </span>
+                                
+                                @if(auth()->user()->isAdmin() && $category->user)
+                                    <span class="flex items-center text-gray-500">
+                                        BY {{ $category->user->name }}
+                                    </span>
+                                @endif
+                                
+                                @if($category->children->count() > 0)
+                                    <span class="flex items-center text-neo-blue">
+                                        {{ $category->children->count() }} SUB-CATS: {{ $category->children->pluck('name')->take(3)->join(', ') }}{{ $category->children->count() > 3 ? '...' : '' }}
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="flex items-center space-x-2 ml-4">
-                    <a href="{{ route('categories.edit', $category) }}" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                        Edit
-                    </a>
                     
-                    <form method="POST" action="{{ route('categories.destroy', $category) }}" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300" onclick="return confirm('Are you sure you want to delete this category? This action cannot be undone.')">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                            Delete
-                        </button>
-                    </form>
+                    <div class="flex items-center gap-2 self-end md:self-center">
+                        <a href="{{ route('categories.edit', $category) }}" class="px-4 py-2 bg-neo-white border-2 border-black text-black font-bold hover:bg-black hover:text-white transition-colors uppercase text-sm shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]">
+                            Edit
+                        </a>
+                        
+                        <form method="POST" action="{{ route('categories.destroy', $category) }}" class="inline" onsubmit="return confirm('DELETE CATEGORY?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="px-4 py-2 bg-red-500 border-2 border-black text-white font-bold hover:bg-black transition-colors uppercase text-sm shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    @empty
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
-            <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-            </svg>
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No categories found</h3>
-            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                Get started by creating your first category to organize your posts.
-            </p>
-            <a href="{{ route('categories.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition-all duration-200">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Create Your First Category
-            </a>
-        </div>
-    @endforelse
+        @empty
+            <div class="bg-neo-white border-4 border-black border-dashed p-12 text-center">
+                <div class="text-6xl mb-4">📁</div>
+                <h3 class="text-2xl font-black uppercase text-gray-400 mb-6">No categories found</h3>
+                <a href="{{ route('categories.create') }}" class="inline-block px-6 py-3 bg-black text-white font-black uppercase hover:bg-neo-purple border-4 border-transparent hover:border-black transition-all shadow-neo hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
+                    Create Your First Category
+                </a>
+            </div>
+        @endforelse
+    </div>
 </x-app-layout>

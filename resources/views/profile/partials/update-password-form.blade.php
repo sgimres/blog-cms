@@ -4,42 +4,34 @@
 
     <div>
         <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-        <x-text-input id="update_password_current_password" name="current_password" type="password" autocomplete="current-password" placeholder="Enter your current password" />
-        <x-input-error :messages="$errors->updatePassword->get('current_password')" />
+        <x-text-input id="update_password_current_password" name="current_password" type="password" autocomplete="current-password" placeholder="ENTER CURRENT PASSWORD" />
+        <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
     </div>
 
     <div>
         <x-input-label for="update_password_password" :value="__('New Password')" />
-        <x-text-input id="update_password_password" name="password" type="password" autocomplete="new-password" placeholder="Enter your new password" />
-        <x-input-error :messages="$errors->updatePassword->get('password')" />
-        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Use at least 8 characters with a mix of letters, numbers, and symbols.
+        <x-text-input id="update_password_password" name="password" type="password" autocomplete="new-password" placeholder="ENTER NEW PASSWORD" />
+        <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
+        <p class="mt-2 text-xs font-mono font-bold text-gray-500">
+            USE 8+ CHARACTERS WITH MIXED CASE, NUMBERS & SYMBOLS.
         </p>
     </div>
 
     <div>
         <x-input-label for="update_password_password_confirmation" :value="__('Confirm New Password')" />
-        <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" placeholder="Confirm your new password" />
-        <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" />
+        <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" placeholder="CONFIRM NEW PASSWORD" />
+        <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
     </div>
 
-    <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <x-primary-button>
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                {{ __('Update Password') }}
-            </x-primary-button>
+    <div class="flex items-center gap-4 pt-4 border-t-4 border-black">
+        <x-primary-button>
+            {{ __('Update Password') }}
+        </x-primary-button>
 
-            @if (session('status') === 'password-updated')
-                <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 3000)" class="flex items-center text-sm text-green-600 dark:text-green-400">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    {{ __('Password updated successfully!') }}
-                </div>
-            @endif
-        </div>
+        @if (session('status') === 'password-updated')
+            <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 3000)" class="text-sm font-bold text-neo-green uppercase bg-black text-white px-2 py-1">
+                {{ __('Updated!') }}
+            </div>
+        @endif
     </div>
 </form>

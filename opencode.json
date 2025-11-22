@@ -5,5 +5,23 @@
       "type": "local",
       "command": ["php", "artisan", "boost:mcp"],
     }
+  },
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "gemini-3-pro-preview": {
+          "name": "Gemini 3"
+        },
+        "minimax-m2:cloud": {
+            "name": "MinMax"
+        }
+      }
+    }
   }
 }
+

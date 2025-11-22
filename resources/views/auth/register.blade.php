@@ -1,8 +1,8 @@
 <x-guest-layout>
     <!-- Header -->
     <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Create your account</h2>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Join our community today</p>
+        <h2 class="text-3xl font-black uppercase tracking-tight">Create Account</h2>
+        <p class="mt-2 text-sm font-mono text-gray-600">Join the community</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-6">
@@ -37,26 +37,19 @@
         </div>
 
         <div>
-            <x-primary-button>
+            <x-primary-button class="w-full">
                 {{ __('Create account') }}
             </x-primary-button>
         </div>
 
-        <!-- Divider -->
-        <div class="relative">
-            <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
-            </div>
-            <div class="relative flex justify-center text-sm">
-                <span class="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Already have an account?</span>
-            </div>
-        </div>
-
         <!-- Sign In Link -->
-        <div class="text-center">
-            <a href="{{ route('login') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-medium">
-                {{ __('Sign in instead') }} →
-            </a>
+        <div class="mt-6 text-center">
+            <p class="text-sm font-mono">
+                Already have an account?
+                <a href="{{ route('login') }}" class="font-bold text-black hover:bg-neo-yellow px-1 transition-colors border-b-2 border-black">
+                    {{ __('Sign in') }}
+                </a>
+            </p>
         </div>
     </form>
 </x-guest-layout>

@@ -127,6 +127,8 @@ class PostController extends Controller
             $this->authorize('view', $post);
         }
 
+        $post->load(['comments.user']);
+
         return view('posts.show', compact('post'));
     }
 

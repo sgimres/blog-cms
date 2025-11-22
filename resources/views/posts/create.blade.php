@@ -1,99 +1,85 @@
 <x-app-layout>
     <x-slot name="header">
-        {{ __('Create Post') }}
+        {{ __('CREATE POST') }}
     </x-slot>
 
     <div class="max-w-4xl mx-auto">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="p-6">
-                <form method="POST" action="{{ route('posts.store') }}" class="space-y-6">
-                    @csrf
+        <div class="bg-white border-4 border-black shadow-neo p-8">
+            <form method="POST" action="{{ route('posts.store') }}" class="space-y-8">
+                @csrf
 
-                    <!-- Title -->
+                <!-- Title -->
+                <div>
+                    <label for="title" class="block font-black text-lg uppercase mb-2">Post Title</label>
+                    <x-text-input id="title" type="text" name="title" :value="old('title')" required autofocus autocomplete="title" placeholder="ENTER TITLE HERE..." />
+                    <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                </div>
+
+                <!-- Content -->
+                <div>
+                    <label for="content" class="block font-black text-lg uppercase mb-2">Content</label>
+                    <textarea id="content" name="content" rows="12" required placeholder="WRITE YOUR CONTENT HERE..." class="w-full px-4 py-3 bg-neo-white border-2 border-black text-black font-mono placeholder-gray-500 focus:outline-none focus:border-neo-blue focus:shadow-neo-sm transition-all duration-200">{{ old('content') }}</textarea>
+                    <x-input-error :messages="$errors->get('content')" class="mt-2" />
+                    <p class="mt-2 text-sm font-mono font-bold text-gray-500">
+                        MARKDOWN SUPPORTED.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Status -->
                     <div>
-                        <x-input-label for="title" :value="__('Post Title')" />
-                        <x-text-input id="title" type="text" name="title" :value="old('title')" required autofocus autocomplete="title" placeholder="Enter an engaging title..." />
-                        <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                        <label for="status" class="block font-black text-lg uppercase mb-2">Status</label>
+                        <select id="status" name="status" required class="w-full px-4 py-3 bg-neo-white border-2 border-black text-black font-bold focus:outline-none focus:border-neo-blue focus:shadow-neo-sm">
+                            <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>DRAFT</option>
+                            <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>PUBLISHED</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('status')" class="mt-2" />
                     </div>
 
-                    <!-- Content -->
+                    <!-- Published At -->
                     <div>
-                        <x-input-label for="content" :value="__('Content')" />
-                        <textarea id="content" name="content" rows="12" required placeholder="Write your amazing content here..." class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200">{{ old('content') }}</textarea>
-                        <x-input-error :messages="$errors->get('content')" class="mt-2" />
-                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                            You can use Markdown to format your content.
+                        <label for="published_at" class="block font-black text-lg uppercase mb-2">Schedule Publication</label>
+                        <x-text-input id="published_at" type="datetime-local" name="published_at" :value="old('published_at')" />
+                        <x-input-error :messages="$errors->get('published_at')" class="mt-2" />
+                        <p class="mt-2 text-sm font-mono font-bold text-gray-500">
+                            LEAVE EMPTY FOR NOW.
                         </p>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Status -->
-                        <div>
-                            <x-input-label for="status" :value="__('Status')" />
-                            <select id="status" name="status" required class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>Published</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
-                        </div>
-
-                        <!-- Published At -->
-                        <div>
-                            <x-input-label for="published_at" :value="__('Schedule Publication')" />
-                            <x-text-input id="published_at" type="datetime-local" name="published_at" :value="old('published_at')" />
-                            <x-input-error :messages="$errors->get('published_at')" class="mt-2" />
-                            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                                Leave empty for immediate publication
-                            </p>
-                        </div>
+                <!-- Categories -->
+                <div>
+                    <label class="block font-black text-lg uppercase mb-2">Categories</label>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                        @foreach($categories as $category)
+                            <label class="flex items-center p-3 border-2 border-black hover:bg-neo-yellow cursor-pointer transition-colors duration-200 bg-neo-white">
+                                <input type="checkbox" name="categories[]" value="{{ $category->id }}" {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }} class="h-5 w-5 text-black border-2 border-black focus:ring-0 rounded-none checked:bg-black">
+                                <div class="ml-3">
+                                    <span class="text-sm font-bold text-black uppercase">{{ $category->name }}</span>
+                                </div>
+                            </label>
+                        @endforeach
                     </div>
+                    <x-input-error :messages="$errors->get('categories')" class="mt-2" />
+                </div>
 
-                    <!-- Categories -->
-                    <div>
-                        <x-input-label for="categories" :value="__('Categories')" />
-                        <div class="mt-3 space-y-2">
-                            @foreach($categories as $category)
-                                <label class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors duration-200">
-                                    <input type="checkbox" name="categories[]" value="{{ $category->id }}" {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
-                                    <div class="ml-3">
-                                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $category->name }}</span>
-                                        @if($category->description)
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $category->description }}</p>
-                                        @endif
-                                    </div>
-                                </label>
-                            @endforeach
-                        </div>
-                        <x-input-error :messages="$errors->get('categories')" class="mt-2" />
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
-                        <a href="{{ route('posts.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                            </svg>
-                            Cancel
-                        </a>
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-between pt-6 border-t-4 border-black">
+                    <a href="{{ route('posts.index') }}" class="inline-flex items-center px-6 py-3 bg-white border-2 border-black text-black font-black uppercase hover:bg-gray-200 transition-colors shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]">
+                        Cancel
+                    </a>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button type="submit" name="save_draft" class="inline-flex items-center px-6 py-3 bg-neo-white border-2 border-black text-black font-black uppercase hover:bg-neo-yellow transition-colors shadow-neo-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]">
+                            Save Draft
+                        </button>
                         
-                        <div class="flex items-center space-x-3">
-                            <button type="submit" name="save_draft" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V2"/>
-                                </svg>
-                                Save Draft
-                            </button>
-                            
-                            <x-primary-button>
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                                </svg>
-                                {{ __('Publish Post') }}
-                            </x-primary-button>
-                        </div>
+                        <x-primary-button>
+                            {{ __('Publish Post') }}
+                        </x-primary-button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

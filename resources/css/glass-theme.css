@@ -1,0 +1,9 @@
+/* Glass surfaces and motion utilities for Glass Morphism UI */
+.glass { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.25); }
+.glass-dark { background: rgba(0,0,0,0.25); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
+
+/* Simple in-view animation */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.animate-in { animation: fadeInUp 0.25s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) { .animate-in { animation: none; } }
