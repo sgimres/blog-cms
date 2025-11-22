@@ -43,7 +43,7 @@
 
             <footer class="bg-black text-white py-8 border-t-4 border-neo-yellow">
                 <div class="max-w-7xl mx-auto px-4 text-center font-mono text-sm">
-                    &copy; {{ date('Y') }} {{ config('app.name') }}. NO RIGHTS RESERVED.
+                    &copy; {{ date('Y') }} {{ config('app.name') }}. ALL RIGHTS RESERVED.
                 </div>
             </footer>
         </div>
