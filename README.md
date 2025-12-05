@@ -70,12 +70,13 @@ A modern, full-featured Blog Content Management System built with **Laravel 12**
     touch database/database.sqlite
     php artisan migrate --seed
     ```
-    *Note: The seeder creates a default Admin user and sample posts.*
+    *Note: The seeder creates a default Admin user and sample posts.* <br>
+    *default credentials for admin_user `username: admin@example.com | password: password`*
 
-6.  **Run the Application**
+7.  **Run the Application**
     ```bash
-    ```
     composer run dev
+    ```
     Visit `http://localhost:8000` in your browser.
 
 
