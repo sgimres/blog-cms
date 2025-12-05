@@ -2,7 +2,7 @@
 
 A modern, full-featured Blog Content Management System built with **Laravel 12**, **Tailwind CSS**, and **Alpine.js**. This application provides a robust platform for publishing content, managing users, and fostering community interaction.
 
-![Dashboard Preview](docs/screenshot/dashboard.png)
+![Dashboard Preview](docs/screenshots/dashboard.png)
 
 ## 🚀 Key Features
 
@@ -31,7 +31,7 @@ A modern, full-featured Blog Content Management System built with **Laravel 12**
 
 | Post View | User Management |
 |:---:|:---:|
-| ![Post View](docs/screenshot/post_view.png) | ![User Management Page](docs/screenshot/user_management.png) |
+| ![Post View](docs/screenshots/post_view.png) | ![User Management Page](docs/screenshots/user_management.png) |
 
 ## 🏁 Getting Started
 
